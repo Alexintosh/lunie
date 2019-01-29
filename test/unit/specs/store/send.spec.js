@@ -129,6 +129,7 @@ describe(`Module: Send`, () => {
           from: `cosmos1demo`,
           gas: `42`,
           generate_only: true,
+          memo: `Sent via Cosmos Voyager 🚀`,
           name: `anonymous`,
           sequence: `0`
         }
@@ -162,6 +163,7 @@ describe(`Module: Send`, () => {
           from: `cosmos1demo`,
           gas: `42`,
           generate_only: true,
+          memo: `Sent via Cosmos Voyager 🚀`,
           name: `anonymous`,
           sequence: `0`
         }
@@ -206,6 +208,7 @@ describe(`Module: Send`, () => {
       it(`if the data has a string in 'message'`, async () => {
         node.postTx = () => Promise.reject(errMsgNoObject.response.data)
         const args = {
+          type: `send`,
           to: `mock_address`,
           amount: [{ denom: `mycoin`, amount: 123 }]
         }
@@ -225,6 +228,7 @@ describe(`Module: Send`, () => {
       it(`if the data is an object and has a 'message' property`, async () => {
         node.postTx = () => Promise.reject(errObject.response.data)
         const args = {
+          type: `send`,
           to: `mock_address`,
           password: `1234567890`,
           amount: [{ denom: `mycoin`, amount: 123 }]
@@ -244,6 +248,7 @@ describe(`Module: Send`, () => {
 
       it(`should signal check tx failure`, async () => {
         const args = {
+          type: `send`,
           to: `mock_address`,
           password: `1234567890`,
           amount: [{ denom: `mycoin`, amount: 123 }]
@@ -267,6 +272,7 @@ describe(`Module: Send`, () => {
 
       it(`should signal deliver tx failure`, async () => {
         const args = {
+          type: `send`,
           to: `mock_address`,
           password: `1234567890`,
           amount: [{ denom: `mycoin`, amount: 123 }]
@@ -290,6 +296,7 @@ describe(`Module: Send`, () => {
 
       it(`should handle tx failure in multiple tx result`, async () => {
         const args = {
+          type: `send`,
           to: `mock_address`,
           password: `1234567890`,
           amount: [{ denom: `mycoin`, amount: 123 }]
@@ -320,6 +327,7 @@ describe(`Module: Send`, () => {
 
     it(`should interpret a returned empty array as failed delivery`, async () => {
       const args = {
+        type: `send`,
         to: `mock_address`,
         password: `1234567890`,
         amount: [{ denom: `mycoin`, amount: 123 }]
@@ -343,6 +351,7 @@ describe(`Module: Send`, () => {
 
       node.postTx = () => Promise.reject(true)
       let args = {
+        type: `send`,
         to: `mock_address`,
         password: `1234567890`,
         amount: [{ denom: `mycoin`, amount: 123 }]
@@ -365,6 +374,7 @@ describe(`Module: Send`, () => {
 
       node.postTx = send
       args = {
+        type: `send`,
         to: `mock_address`,
         password: `1234567890`,
         amount: [{ denom: `mycoin`, amount: 123 }]
@@ -390,11 +400,13 @@ describe(`Module: Send`, () => {
       jest.useFakeTimers()
 
       const args = {
+        type: `send`,
         to: `mock_address`,
         password: `1234567890`,
         amount: [{ denom: `mycoin`, amount: 123 }]
       }
       const args2 = {
+        type: `send`,
         to: `mock_address_2`,
         password: `1234567890`,
         amount: [{ denom: `mycoin`, amount: 123 }]
@@ -445,11 +457,13 @@ describe(`Module: Send`, () => {
 
     it(`should free the lock if sending a tx fails`, async () => {
       const args = {
+        type: `send`,
         to: `mock_address`,
         password: `1234567890`,
         amount: [{ denom: `mycoin`, amount: 123 }]
       }
       const args2 = {
+        type: `send`,
         to: `mock_address_2`,
         password: `1234567890`,
         amount: [{ denom: `mycoin`, amount: 123 }]
@@ -482,6 +496,7 @@ describe(`Module: Send`, () => {
 
     it(`should query the wallet state before sending to acquire nonce`, async () => {
       const args = {
+        type: `send`,
         to: `mock_address`,
         password: `1234567890`,
         amount: [{ denom: `mycoin`, amount: 123 }]
@@ -501,6 +516,7 @@ describe(`Module: Send`, () => {
 
     it(`should throw an error if not connected`, async () => {
       let args = {
+        type: `send`,
         to: `mock_address`,
         amount: [{ denom: `mycoin`, amount: 123 }]
       }

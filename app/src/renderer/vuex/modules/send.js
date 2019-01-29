@@ -56,34 +56,28 @@ export default ({ node }) => {
         )
       }
 
+      const { type, to, password, ...txArguments } = args
+
       await dispatch(`queryWalletBalances`) // the nonce was getting out of sync, this is to force a sync
 
-      let requestMetaData = {
+      const requestMetaData = {
         sequence: state.nonce,
         name: `anonymous`,
         from: rootState.wallet.address,
         account_number: rootState.wallet.accountNumber, // TODO move into LCD?
         chain_id: rootState.connection.lastHeader.chain_id,
         gas: String(config.default_gas),
-        generate_only: true
+        generate_only: true,
+        memo: `Sent via Cosmos Voyager 🚀`
       }
-      args.base_req = requestMetaData
-
-      // extract type
-      let type = args.type || `send`
-      delete args.type
-
-      // extract "to" address
-      let to = args.to
-      delete args.to
+      const txBody = Object.assign({ base_req: requestMetaData }, txArguments)
 
       // get the generated tx by querying it from the backend
-      let req = to ? node[type](to, args) : node[type](args)
-      let generationRes = await req.catch(handleSDKError)
+      const req = to ? node[type](to, txBody) : node[type](txBody)
+      const generationRes = await req.catch(handleSDKError)
 
       // get private key to sign
-      const wallet = getKey(rootState.user.account, args.password)
-      delete args.password
+      const wallet = getKey(rootState.user.account, password)
 
       // sign
       const tx = generationRes.value
