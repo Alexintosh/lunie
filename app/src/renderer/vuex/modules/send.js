@@ -8,7 +8,6 @@ const config = require(`../../../config.json`)
 
 export default ({ node }) => {
   let state = {
-    lock: null,
     nonce: `0`
   }
 
@@ -21,31 +20,6 @@ export default ({ node }) => {
   }
 
   let actions = {
-    // `lock` is a Promise which is set if we are in the process
-    // of sending a transaction, so that we can ensure only one send
-    // happens at once. otherwise, we might try to send 2 transactions
-    // using the same sequence number, which means 1 of them won't be valid.
-    async queueTx({ dispatch, state }, args) {
-      // wait to acquire lock
-      while (state.lock != null) {
-        // eslint-disable-line no-unmodified-loop-condition
-        await state.lock
-      }
-
-      try {
-        // send tx and store lock to prevent other txs to be send meanwhile
-        state.lock = dispatch(`sendTx`, args)
-
-        // wait for sendTx to finish
-        let res = await state.lock
-        return res
-      } catch (error) {
-        throw error
-      } finally {
-        // get rid of lock whether doSend throws or succeeds
-        state.lock = null
-      }
-    },
     resetSessionData({ state }) {
       state.nonce = `0`
     },
